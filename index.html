@@ -92,7 +92,7 @@
       background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 0px;
     }
     .modal-content {
       background: #fff;
@@ -118,6 +118,18 @@
       cursor: pointer;
       color: #999;
     }
+    @media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .close {
+    top: 5px;
+    right: 8px;
+    font-size: 1.2rem;
+  }
+}
     .ingredients, .instructions {
       margin-top: 10px;
       padding: 10px;
