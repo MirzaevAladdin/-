@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>カフェメニュー</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: #faf7f2;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #6b4226;
+      margin-bottom: 20px;
+    }
+    main { flex: 1; padding: 0 20px 20px; }
+    .filters { text-align: center; margin-bottom: 20px; }
+    .filters button {
+      margin: 5px; padding: 8px 16px;
+      border: none; border-radius: 16px;
+      background: #e8d3c1; cursor: pointer;
+      font-size: 0.9rem; transition: background 0.3s;
+    }
+    .filters button.active { background: #caa472; color: #fff; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column; position: relative;
+      cursor: pointer;
+    }
+    .photo-wrap { position: relative; }
+    .photo-wrap img {
+      width: 100%; height: 160px;
+      object-fit: cover; display: block;
+      transition: transform 0.3s ease;
+    }
+    .photo-wrap:hover img { transform: scale(1.05); }
+    .meta { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .name { font-weight: bold; font-size: 1.1rem; color: #6b4226; }
+    .desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
+    .price { font-weight: bold; color: #c44; }
+
+    /* Статус карточки */
+    .status-label {
+      background: #e8d3c1; text-align: center;
+      font-size: 14px; font-weight: bold;
+      padding: 4px; color: #333;
+    }
+
+    /* модалки */
+    .modal {
+      display: none; position: fixed; z-index: 1000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: #fff; border-radius: 12px;
+      max-width: 320px; width: 90%; padding: 20px;
+      position: relative; text-align: center;
+    }
+    .close {
+      position: absolute; top: 10px; right: 13px;
+      font-size: 1.5rem; cursor: pointer; color: #999;
+    }
+    .close:hover { color: #333; }
+
+    footer { padding: 12px 0; display: flex; justify-content: center; }
+    .dev {
+      font-size: 14px; padding: 8px 16px;
+      border-radius: 8px; background: rgba(0,0,0,0.08);
+      text-align: center; color: #c2a676;
+    }
+
+    /* админ панель */
+    #adminPanel {
+      display: none; position: fixed;
+      top: 60px; right: 10px;
+      background: #fff; padding: 15px;
+      border: 1px solid #ccc; border-radius: 8px;
+      z-index: 1000; width: 220px;
+    }
+    #adminPanel h4 { margin: 0 0 10px; }
+    #adminPanel .close {
+      position: absolute; top: 5px; right: 8px;
+      font-size: 1.3rem; cursor: pointer; color: #999;
+    }
+    #adminPanel .close:hover { color: #333; }
+  </style>
+</head>
+<body>
+  <!-- Кнопка меню -->
+  <button id="menuBtn" style="position:fixed;top:10px;right:10px;font-size:26px;background:none;border:none;cursor:pointer;z-index:1100;">☰</button>
+
+  <!-- Окно логина -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLogin()">&times;</span>
+      <h3>Админ вход</h3>
+      <input type="text" id="loginInput" placeholder="Логин"><br><br>
+      <input type="password" id="passInput" placeholder="Пароль"><br><br>
+      <button onclick="checkLogin()">Войти</button>
+    </div>
+  </div>
+
+  <!-- Панель администратора -->
+  <div id="adminPanel">
+    <span class="close" onclick="closeAdminPanel()">&times;</span>
+    <h4>Статус продукции</h4>
+    <div id="selectedCard">Выберите карточку...</div><br>
+    <label><input type="radio" name="status" value="В наличии"> В наличии</label><br>
+    <label><input type="radio" name="status" value="Ожидание продукции"> Ожидание продукции</label><br>
+    <label><input type="radio" name="status" value="Нет в продаже"> Нет в продаже</label><br><br>
+    <button onclick="saveStatus()">Сохранить</button>
+  </div>
+
+  <h1>カフェメニュー</h1>
+  <main>
+    <!-- Фильтры -->
+    <div class="filters">
+      <button data-season="all" class="active">共通メニュー</button>
+      <button data-season="spring">煮込み料理</button>
+      <button data-season="summer">サラダ</button>
+      <button data-season="autumn">飲み物</button>
+      <button data-season="winter">焼き菓子</button>
+    </div>
+
+    <div class="grid">
+      <!-- Card 1 -->
+      <article class="card" data-id="1" data-season="spring">
+        <div class="status-label" id="status-1">Статус: Ожидание</div>
+        <div class="photo-wrap" data-recipe-id="1" tabindex="0">
+          <img src="https://i.ibb.co/v6SB8vc2/foto.jpg" alt="名前" loading="lazy">
+        </div>
+        <div class="meta">
+          <div>
+            <div class="name">名前</div>
+            <div class="desc">説明</div>
+          </div>
+          <div class="price">¥420</div>
+        </div>
+      </article>
+      <!-- Card 2 -->
+      <article class="card" data-id="2" data-season="all">
+        <div class="status-label" id="status-2">Статус: Ожидание</div>
+        <div class="photo-wrap" data-recipe-id="2" tabindex="0">
+          <img src="https://esmmweighless.com/wp-content/uploads/2019/12/Carolyn-Cooking-Blog-scaled.jpg" alt="名前" loading="lazy">
+        </div>
+        <div class="meta">
+          <div>
+            <div class="name">名前</div>
+            <div class="desc">説明</div>
+          </div>
+          <div class="price">¥380</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Модалка рецепта -->
+    <div id="recipeModal" class="modal" aria-hidden="true">
+      <div class="modal-content" role="dialog" aria-modal="true">
+        <span class="close" aria-label="閉じる">&times;</span>
+        <h2 id="recipeTitle"></h2>
+        <div class="ingredients">
+          <h3>材料</h3>
+          <ul id="ingredientsList" role="list"></ul>
+        </div>
+        <div class="instructions">
+          <h3>作り方</h3>
+          <ol id="instructionsList" role="list"></ol>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="dev">ウェブサイト開発者：ミルザエフアラジン氏</div>
+  </footer>
+
+  <script>
+    // === Рецепты ===
+    const recipes = {
+      1: { title: "名前", ingredients: ["名前 ","名前 ","名前 "], instructions: ["名前","名前","名前"] },
+      2: { title: "名前", ingredients: ["名前 ","名前 ","名前"], instructions: ["名前","名前","名前"] },
+    };
+
+    const modal = document.getElementById("recipeModal");
+    const recipeTitle = document.getElementById("recipeTitle");
+    const ingredientsList = document.getElementById("ingredientsList");
+    const instructionsList = document.getElementById("instructionsList");
+    const closeBtn = modal.querySelector(".close");
+
+    function openRecipe(id) {
+      const recipe = recipes[id];
+      if (!recipe) return;
+      recipeTitle.textContent = recipe.title;
+      ingredientsList.innerHTML = recipe.ingredients.map(i => `<li>${i}</li>`).join("");
+      instructionsList.innerHTML = recipe.instructions.map(i => `<li>${i}</li>`).join("");
+      modal.style.display = "flex";
+    }
+    function closeRecipe() { modal.style.display="none"; }
+    document.querySelectorAll("[data-recipe-id]").forEach(el=>{
+      el.addEventListener("click",()=>openRecipe(el.dataset.recipeId));
+    });
+    closeBtn.addEventListener("click",closeRecipe);
+    modal.addEventListener("click",e=>{if(e.target===modal)closeRecipe()});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeRecipe()});
+
+    // === Фильтры ===
+    const buttons = document.querySelectorAll(".filters button");
+    const cards = document.querySelectorAll(".card");
+    buttons.forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        buttons.forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        const season = btn.dataset.season;
+        cards.forEach(card=>{
+          card.style.display = (season==="all" || card.dataset.season===season) ? "flex" : "none";
+        });
+      });
+    });
+
+    // === Админ логика ===
+    const menuBtn = document.getElementById("menuBtn");
+    const loginModal = document.getElementById("loginModal");
+    const adminPanel = document.getElementById("adminPanel");
+    const selectedCard = document.getElementById("selectedCard");
+    let currentCardId = null;
+    let isAdmin = false;
+
+    menuBtn.onclick = () => {
+      if (isAdmin) {
+        adminPanel.style.display = "block";
+      } else {
+        loginModal.style.display = "flex";
+      }
+    };
+
+    function closeLogin() { loginModal.style.display = "none"; }
+    function closeAdminPanel() { adminPanel.style.display = "none"; }
+
+    window.onclick = function(event) {
+      if (event.target === loginModal) closeLogin();
+    };
+
+    function checkLogin() {
+      const login = document.getElementById("loginInput").value;
+      const pass = document.getElementById("passInput").value;
+      if (login === "admin" && pass === "987654321") {
+        loginModal.style.display = "none";
+        adminPanel.style.display = "block";
+        enableAdminMode();
+        isAdmin = true;
+      } else { alert("Неверный логин или пароль!"); }
+    }
+
+    function enableAdminMode() {
+      cards.forEach(card=>{
+        card.addEventListener("click",()=>{
+          currentCardId = card.dataset.id;
+          selectedCard.textContent = "Выбрана карточка №" + currentCardId;
+        });
+      });
+    }
+
+    function saveStatus() {
+      const status = document.querySelector('input[name="status"]:checked');
+      if (status && currentCardId) {
+        const key = "status-card-" + currentCardId;
+        localStorage.setItem(key, status.value);
+        const el = document.getElementById("status-" + currentCardId);
+        if (el) el.textContent = "Статус: " + status.value;
+        alert("Статус сохранён!");
+      } else { alert("Выберите карточку и статус!"); }
+    }
+
+    // восстановление при загрузке
+    window.onload = () => {
+      document.querySelectorAll(".card").forEach(card => {
+        const id = card.dataset.id;
+        const savedStatus = localStorage.getItem("status-card-" + id);
+        if (savedStatus) {
+          const el = document.getElementById("status-" + id);
+          if (el) el.textContent = "Статус: " + savedStatus;
+        }
+      });
+    };
+  </script>
+</body>
+</html>
