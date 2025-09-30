@@ -50,14 +50,14 @@
     .desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
     .price { font-weight: bold; color: #c44; }
 
-    /* Статус карточки */
+    /* カードのステータス */
     .status-label {
       background: #e8d3c1; text-align: center;
       font-size: 14px; font-weight: bold;
       padding: 4px; color: #333;
     }
 
-    /* модалки */
+    /* モーダル */
     .modal {
       display: none; position: fixed; z-index: 1000;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -81,7 +81,7 @@
       text-align: center; color: #c2a676;
     }
 
-    /* админ панель */
+    /* 管理パネル */
     #adminPanel {
       display: none; position: fixed;
       top: 60px; right: 10px;
@@ -98,34 +98,34 @@
   </style>
 </head>
 <body>
-  <!-- Кнопка меню -->
+  <!-- メニューボタン -->
   <button id="menuBtn" style="position:fixed;top:10px;right:10px;font-size:26px;background:none;border:none;cursor:pointer;z-index:1100;">☰</button>
 
-  <!-- Окно логина -->
+  <!-- ログイン画面 -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeLogin()">&times;</span>
-      <h3>Админ вход</h3>
-      <input type="text" id="loginInput" placeholder="Логин"><br><br>
-      <input type="password" id="passInput" placeholder="Пароль"><br><br>
-      <button onclick="checkLogin()">Войти</button>
+      <h3>管理者ログイン</h3>
+      <input type="text" id="loginInput" placeholder="ユーザー名"><br><br>
+      <input type="password" id="passInput" placeholder="パスワード"><br><br>
+      <button onclick="checkLogin()">ログイン</button>
     </div>
   </div>
 
-  <!-- Панель администратора -->
+  <!-- 管理者パネル -->
   <div id="adminPanel">
     <span class="close" onclick="closeAdminPanel()">&times;</span>
-    <h4>Статус продукции</h4>
-    <div id="selectedCard">Выберите карточку...</div><br>
-    <label><input type="radio" name="status" value="В наличии"> В наличии</label><br>
-    <label><input type="radio" name="status" value="Ожидание продукции"> Ожидание продукции</label><br>
-    <label><input type="radio" name="status" value="Нет в продаже"> Нет в продаже</label><br><br>
-    <button onclick="saveStatus()">Сохранить</button>
+    <h4>商品のステータス</h4>
+    <div id="selectedCard">カードを選択してください...</div><br>
+    <label><input type="radio" name="status" value="在庫あり"> 在庫あり</label><br>
+    <label><input type="radio" name="status" value="入荷待ち"> 入荷待ち</label><br>
+    <label><input type="radio" name="status" value="販売終了"> 販売終了</label><br><br>
+    <button onclick="saveStatus()">保存</button>
   </div>
 
   <h1>カフェメニュー</h1>
   <main>
-    <!-- Фильтры -->
+    <!-- フィルター -->
     <div class="filters">
       <button data-season="all" class="active">共通メニュー</button>
       <button data-season="spring">煮込み料理</button>
@@ -135,29 +135,29 @@
     </div>
 
     <div class="grid">
-      <!-- Card 1 -->
+      <!-- カード1 -->
       <article class="card" data-id="1" data-season="spring">
-        <div class="status-label" id="status-1">Статус: Ожидание</div>
+        <div class="status-label" id="status-1">ステータス: 入荷待ち</div>
         <div class="photo-wrap" data-recipe-id="1" tabindex="0">
           <img src="https://i.ibb.co/v6SB8vc2/foto.jpg" alt="名前" loading="lazy">
         </div>
         <div class="meta">
           <div>
-            <div class="name">名前</div>
+            <div class="name">料理名</div>
             <div class="desc">説明</div>
           </div>
           <div class="price">¥420</div>
         </div>
       </article>
-      <!-- Card 2 -->
+      <!-- カード2 -->
       <article class="card" data-id="2" data-season="all">
-        <div class="status-label" id="status-2">Статус: Ожидание</div>
+        <div class="status-label" id="status-2">ステータス: 入荷待ち</div>
         <div class="photo-wrap" data-recipe-id="2" tabindex="0">
           <img src="https://esmmweighless.com/wp-content/uploads/2019/12/Carolyn-Cooking-Blog-scaled.jpg" alt="名前" loading="lazy">
         </div>
         <div class="meta">
           <div>
-            <div class="name">名前</div>
+            <div class="name">料理名</div>
             <div class="desc">説明</div>
           </div>
           <div class="price">¥380</div>
@@ -165,7 +165,7 @@
       </article>
     </div>
 
-    <!-- Модалка рецепта -->
+    <!-- レシピモーダル -->
     <div id="recipeModal" class="modal" aria-hidden="true">
       <div class="modal-content" role="dialog" aria-modal="true">
         <span class="close" aria-label="閉じる">&times;</span>
@@ -187,10 +187,10 @@
   </footer>
 
   <script>
-    // === Рецепты ===
+    // === レシピ ===
     const recipes = {
-      1: { title: "名前", ingredients: ["名前 ","名前 ","名前 "], instructions: ["名前","名前","名前"] },
-      2: { title: "名前", ingredients: ["名前 ","名前 ","名前"], instructions: ["名前","名前","名前"] },
+      1: { title: "料理名", ingredients: ["材料1","材料2","材料3"], instructions: ["手順1","手順2","手順3"] },
+      2: { title: "料理名", ingredients: ["材料1","材料2","材料3"], instructions: ["手順1","手順2","手順3"] },
     };
 
     const modal = document.getElementById("recipeModal");
@@ -215,7 +215,7 @@
     modal.addEventListener("click",e=>{if(e.target===modal)closeRecipe()});
     document.addEventListener("keydown",e=>{if(e.key==="Escape")closeRecipe()});
 
-    // === Фильтры ===
+    // === フィルター ===
     const buttons = document.querySelectorAll(".filters button");
     const cards = document.querySelectorAll(".card");
     buttons.forEach(btn=>{
@@ -229,7 +229,7 @@
       });
     });
 
-    // === Админ логика ===
+    // === 管理者ロジック ===
     const menuBtn = document.getElementById("menuBtn");
     const loginModal = document.getElementById("loginModal");
     const adminPanel = document.getElementById("adminPanel");
@@ -260,14 +260,14 @@
         adminPanel.style.display = "block";
         enableAdminMode();
         isAdmin = true;
-      } else { alert("Неверный логин или пароль!"); }
+      } else { alert("ユーザー名またはパスワードが違います！"); }
     }
 
     function enableAdminMode() {
       cards.forEach(card=>{
         card.addEventListener("click",()=>{
           currentCardId = card.dataset.id;
-          selectedCard.textContent = "Выбрана карточка №" + currentCardId;
+          selectedCard.textContent = "選択されたカード №" + currentCardId;
         });
       });
     }
@@ -278,19 +278,19 @@
         const key = "status-card-" + currentCardId;
         localStorage.setItem(key, status.value);
         const el = document.getElementById("status-" + currentCardId);
-        if (el) el.textContent = "Статус: " + status.value;
-        alert("Статус сохранён!");
-      } else { alert("Выберите карточку и статус!"); }
+        if (el) el.textContent = "ステータス: " + status.value;
+        alert("ステータスが保存されました！");
+      } else { alert("カードとステータスを選択してください！"); }
     }
 
-    // восстановление при загрузке
+    // ページ読み込み時にステータス復元
     window.onload = () => {
       document.querySelectorAll(".card").forEach(card => {
         const id = card.dataset.id;
         const savedStatus = localStorage.getItem("status-card-" + id);
         if (savedStatus) {
           const el = document.getElementById("status-" + id);
-          if (el) el.textContent = "Статус: " + savedStatus;
+          if (el) el.textContent = "ステータス: " + savedStatus;
         }
       });
     };
