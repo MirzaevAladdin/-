@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>カフェメニュー</title>
   <style>
-
   .filters button.active {
       background: #caa472;
       color: #fff;
     }
-
-
     h1 {
       text-align: center;
       font-size: 2.5rem;
@@ -24,7 +21,6 @@
         0 0 25px #0000ff,
         0 0 30px #8b00ff;
     }
-
     @keyframes glow {
       0% { color: #ff4d4d; text-shadow: 0 0 10px #ff4d4d, 0 0 20px #ff0000, 0 0 40px #ff4d4d; }
       25% { color: #668fff; text-shadow: 0 0 10px #6b66ff, 0 0 20px #0084ff, 0 0 40px #6675ff; }
@@ -111,11 +107,9 @@
       backface-visibility: hidden;
       transform: translateZ(0);
     }
-
     .photo-wrap:hover img {
       transform: scale(1.05);
     }
-
     .meta {
       padding: 12px;
       display: flex;
@@ -123,7 +117,6 @@
       align-items: center;
       flex-grow: 1; 
     }
-
     .name {
       font-weight: bold;
       font-size: 1.1rem;
@@ -136,13 +129,11 @@
       color: #bbb;
       margin-top: 4px;
     }
-
     .price {
       font-weight: bold;
       color: #ff7f50;
       text-shadow: 0 0 10px #ff7f50;
     }
-
     /* modal */
     .modal {
       display: none;
@@ -155,7 +146,6 @@
       align-items: center;
       padding: 0px;
     }
-
     .modal-content {
       background: #fff;
       border-radius: 12px;
@@ -169,7 +159,6 @@
       opacity: 0;
       transition: all 0.3s ease;
     }
-
     .modal.show .modal-content {
       transform: scale(1);
       opacity: 1;
@@ -183,7 +172,6 @@
       cursor: pointer;
       color: #999;
     }
-
     @media (max-width: 480px) {
       .modal-content {
         width: 95%;
@@ -219,7 +207,6 @@
       justify-content: center;
       background: transparent;
     }
-
   </style>
 </head>
 <body>
@@ -233,7 +220,6 @@
       <button data-season="autumn">飲み物</button>
       <button data-season="winter">焼き菓子</button>
     </div>
-
     <div class="grid">
   <!-- Card 1 -->
   <article class="card" data-id="1" data-season="spring">
@@ -251,7 +237,6 @@
       <div class="price">¥420</div>
     </div>
   </article>
-
   <!-- Card 2 -->
   <article class="card" data-id="2" data-season="all">
     <div class="photo-wrap" data-recipe-id="2" tabindex="0" role="button" aria-label="レシピ">
@@ -268,7 +253,6 @@
       <div class="price">¥380</div>
     </div>
   </article>
-
   <!-- Card 3 -->
   <article class="card" data-id="3" data-season="autumn">
     <div class="photo-wrap" data-recipe-id="3" tabindex="0" role="button" aria-label="レシピ">
@@ -285,7 +269,6 @@
       <div class="price">¥520</div>
     </div>
   </article>
-
   <!-- Card 4 -->
   <article class="card" data-id="4" data-season="spring">
     <div class="photo-wrap" data-recipe-id="4" tabindex="0" role="button" aria-label="レシピ">
@@ -302,7 +285,6 @@
       <div class="price">¥300</div>
     </div>
   </article>
-
   <!-- Card 5 -->
   <article class="card" data-id="5" data-season="all">
     <div class="photo-wrap" data-recipe-id="5" tabindex="0" role="button" aria-label="レシピ">
@@ -353,11 +335,9 @@
       </div>
     </div>
   </main>
-
   <footer>
     <div class="dev">ウェブサイト開発者：ミルザエフアラジン氏</div>
   </footer>
-
   <script>
     const recipes = {
       1: { title: "名前", ingredients: ["名前 ", "名前 ", "名前 "], instructions: ["名前", "名前", "名前"] },
@@ -367,14 +347,12 @@
       5: { title: "名前", ingredients: ["名前 ", "名前 "], instructions: ["名前", "名前", "名前"] },
       6: { title: "名前", ingredients: ["名前 ", "名前 ", "名前"], instructions: ["名前", "名前", "名前"] }
     };
-
     const modal = document.getElementById("recipeModal");
     const modalContent = modal.querySelector(".modal-content");
     const recipeTitle = document.getElementById("recipeTitle");
     const ingredientsList = document.getElementById("ingredientsList");
     const instructionsList = document.getElementById("instructionsList");
     const closeBtn = modal.querySelector(".close");
-
     function openRecipe(id) {
       const recipe = recipes[id];
       recipeTitle.textContent = recipe.title;
@@ -389,7 +367,6 @@
       setTimeout(()=>{modal.style.display="none";},300);
       modal.setAttribute("aria-hidden","true");
     }
-
     document.querySelectorAll("[data-recipe-id]").forEach(el=>{
       el.addEventListener("click",()=>openRecipe(el.dataset.recipeId));
       el.addEventListener("keypress",(e)=>{if(e.key==="Enter")openRecipe(el.dataset.recipeId)});
@@ -397,7 +374,6 @@
     closeBtn.addEventListener("click",closeRecipe);
     modal.addEventListener("click",e=>{if(e.target===modal)closeRecipe()});
     document.addEventListener("keydown",e=>{if(e.key==="Escape")closeRecipe()});
-
     const buttons = document.querySelectorAll(".filters button");
     const cards = document.querySelectorAll(".card");
     buttons.forEach(btn=>{
